@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cc068"],{"4bbf":function(e){e.exports=JSON.parse('{"options":[{"code":"WHATSAPP","name":"WHATSAPP"},{"code":"TELEGRAM","name":"TELEGRAM"},{"code":"TWITTER","name":"TWITTER"},{"code":"FACEBOOK","name":"FACEBOOK"},{"code":"INSTAGRAM","name":"INSTAGRAM"},{"code":"WEBSITE","name":"WEBSITE"}]}')}}]);
