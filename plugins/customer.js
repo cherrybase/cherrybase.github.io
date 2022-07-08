@@ -15,10 +15,10 @@
             OPTIONS = options;
 
             options.domain =  options.domain || [options.entity,".mehery.com"].join("");
-            options.path = ["https://", options.domain ,"/postman/plugin/customer/app/chat/"].join("");
+            options.path = ["https://", options.domain ,"/postman/ext/plugin/customer/app/chat/"].join("");
 
             if(options.local){
-                options.path = [options.local, "/plugin/customer/app/chat/"].join("");
+                options.path = [options.local, "/ext/plugin/customer/app/chat/"].join("");
             }
 
             //local-kwt.amxremit.com:8083/agent/app/home
@@ -38,14 +38,15 @@
             <style>
                 #myChatDiv {
                     height: ${minHeight+2}px; width: ${minWidth+2}px; 
-                    position: fixed; bottom: 0px; right:0px; z-index: 1000; 
+                    position: fixed; bottom: 0px; right:0px; z-index:1000000; 
                     background-color: transparent; 
-                    overflow:hidden;
                     padding:0px!important; 
                     margin:0px!important
                 }
                 #myChatDiv #myChatFrame {
                     maring: 0px 0px 0px 0px; 
+                    position:relative;
+                    bottom:0;
                 }
                 #myChatDiv #myChatFrame #myChatIFrame-${UNIQUEID} {
                     border-width: 0px; 
@@ -60,6 +61,9 @@
                 }
                 .myChatDivOpen#myChatDiv #myChatFrame {
                     maring: 0px 0px 0px 0px; 
+                }
+                .myChatDivOpen#myChatDiv #myChatTitleBar {
+                    display : none;
                 }
                 .myChatDivOpen#myChatDiv #myChatFrame #myChatIFrame-${UNIQUEID} {
                     margin: 0px 0px 0px 0px;
@@ -77,6 +81,7 @@
                         bottom: 0;
                         border-radius: 0px!important;
                         transition: .1s ease-in-out;
+                        z-index:100000;
                     }
                 }
 
@@ -96,6 +101,10 @@
 
 
 
+        },
+
+        open : function(){
+            this.postMessage( { event : "CHAT_TOGGLE" });
         },
         ON_CHAT_LOAD : function () {
            this.postMessage({event : "SET_OPTIONS", options : OPTIONS });
@@ -142,21 +151,10 @@
     var myScript = scripts[index];
     var serviceUrl = myScript.src; 
     try {
-        return myChat.init(JSON.parse(myScript.innerHTML));
+        myChat.init(JSON.parse(myScript.innerHTML));
+        win.myChat = myChat;
     } catch(e){
         console.error(e);
     }
-    var pluginUrl = "https://api.mehery.com/postman/plugin/customer/app/chat/";
-    if(serviceUrl.indexOf("/assets/js/customer.plugin.")>0){
-    	var urlparts = serviceUrl.split("/assets/js/customer.plugin.");
-    	var domainUrl = urlparts[0];
-    	var theme = (urlparts[1].split("theme=")[1] || "").split("&")[0];
-    	if(theme){
-    		pluginUrl = domainUrl + "/" + "dummy/customer?page=plugin."+theme;    		
-    	}
-    }
-    console.log("pluginUrl",pluginUrl)
-   
-
-    win.myChat = myChat;
+    
 }(this));
