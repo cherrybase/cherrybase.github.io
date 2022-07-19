@@ -14,7 +14,7 @@
                 entity : "api", // After which chat is expired
             },options);
             OPTIONS = options;
-
+            //options.domain =  'socnect.local.com';
             options.domain =  options.domain || [options.entity,".mehery.com"].join("");
             options.path = ["https://", options.domain ,"/postman/ext/plugin/customer/app/chat/"].join("");
 
@@ -23,7 +23,7 @@
             }
 
             //local-kwt.amxremit.com:8083/agent/app/home
-            //options.query = ["CDN_URL=http://127.0.0.1:8080&CDN_DEBUG=true"]
+            //options.query = ["CDN_URL=http://127.0.0.1:8080&CDN_DEBUG=true"].join('&')
             console.log("init",options);
             var div = document.createElement("div");
             document.getElementsByTagName('body')[0].appendChild(div);
@@ -33,7 +33,7 @@
                      style='height: ${minHeight}px; width: ${minWidth}px; position:fixed; cursor: pointer;'></div>
                 <div id='myChatFrame' style='margin: 0px 0px 0px 0px;'>
                     <iframe id="myChatIFrame-${UNIQUEID}" 
-                        allow="camera https://${options.domain}; microphone https://${options.domain}"
+                        allow="camera https://${options.domain}; microphone https://${options.domain}; geolocation https://${options.domain}"
                             src=${options.path}?${options.query}></iframe>
                 <div>
             </div>
@@ -49,6 +49,8 @@
                     maring: 0px 0px 0px 0px; 
                     position:relative;
                     bottom:0;
+                    width:100%;
+                    height:100%;
                 }
                 #myChatDiv #myChatFrame #myChatIFrame-${UNIQUEID} {
                     border-width: 0px; 
@@ -76,9 +78,9 @@
                 @media (max-width: 450px) {
                     .myChatDivOpen#myChatDiv,
                     .myChatDivOpen#myChatDiv #myChatFrame #myChatIFrame-${UNIQUEID} {
-                        width: 100vw;
-                        height: 100vh;
-                        max-height: 100vh;
+                        width: 100%;
+                        height: 100%;
+                        max-height: 100%;
                         right: 0;
                         bottom: 0;
                         border-radius: 0px!important;
