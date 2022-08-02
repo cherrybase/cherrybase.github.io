@@ -1,5 +1,14 @@
 (function (win) {
 
+    function create_UUID(){
+        var dt = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    }
     var maxHeight = 500;
     var minHeight = 70;
     var maxWidth = 400;
@@ -7,6 +16,7 @@
     var UNIQUEID = '3ix5ju9kqbtr2W';
     var OPTIONS = {};
     var EVENTS = {};
+    var VISIT_ID = create_UUID();
 
     var myChat = {
         init : function (options) {
@@ -22,13 +32,21 @@
                 options.path = [options.local, "/ext/plugin/customer/app/chat/"].join("");
             }
 
+            let VISITOR_ID = localStorage.getItem(`${options.domain}-visitor`) || VISIT_ID;
+            localStorage.setItem(`${options.domain}-visitor`,VISITOR_ID);
+
             //local-kwt.amxremit.com:8083/agent/app/home
-            //options.query = ["CDN_URL=http://127.0.0.1:8080&CDN_DEBUG=true"].join('&')
+            options.query = [
+               // "CDN_URL=http://127.0.0.1:8080&CDN_DEBUG=true",
+               `channelId=${options.channelId}`,
+               `visitor_id=${VISITOR_ID}`,
+               `visit_id=${VISIT_ID}`
+            ].join('&')
             console.log("init",options);
             var div = document.createElement("div");
             document.getElementsByTagName('body')[0].appendChild(div);
             div.outerHTML = `
-            <div id='myChatDiv' class="myChatDivClose">
+            <div id='myChatDiv' class="myChatDivClose ${options.config["launcher.position"]}">
                 <div id='myChatTitleBar' 
                      style='height: ${minHeight}px; width: ${minWidth}px; position:fixed; cursor: pointer;'></div>
                 <div id='myChatFrame' style='margin: 0px 0px 0px 0px;'>
@@ -40,11 +58,31 @@
             <style>
                 #myChatDiv {
                     height: ${minHeight+2}px; width: ${minWidth+2}px; 
-                    position: fixed; bottom: 0px; right:0px; z-index:1000000; 
+                    position: fixed; z-index:1000000; 
                     background-color: transparent; 
                     padding:0px!important; 
                     margin:0px!important
                 }
+                #myChatDiv.myChatDivOpen, #myChatDiv.myChatDivClose{
+                    bottom: 0px; right:0px;
+                }
+                #myChatDiv.myChatDivOpen.left-bottom, #myChatDiv.myChatDivOpen.left-sticky{
+                    bottom: 0px; left:0px; right:auto;
+                }
+                #myChatDiv.myChatDivClose.right-bottom{
+                    bottom: 0px; right:0px;
+                }
+                #myChatDiv.myChatDivClose.left-bottom{
+                    bottom: 0px; left:0px;
+                }
+                #myChatDiv.myChatDivClose.right-sticky{
+                    bottom: calc(50% - 20px); right:0px;
+                }
+
+                #myChatDiv.myChatDivClose.left-sticky{
+                    bottom: calc(50% - 20px); left:0px;
+                }
+                
                 #myChatDiv #myChatFrame {
                     maring: 0px 0px 0px 0px; 
                     position:relative;
@@ -109,6 +147,9 @@
         open : function(){
             this.postMessage( { event : "CHAT_TOGGLE" });
         },
+        close : function(){
+            this.postMessage( { event : "CHAT_TOGGLE" });
+        },
         ON_CHAT_LOAD : function () {
            this.postMessage({event : "SET_OPTIONS", options : OPTIONS });
            if(EVENTS.load)  EVENTS.load(OPTIONS);
@@ -161,6 +202,31 @@
     var myScript = scripts[index];
     var serviceUrl = myScript.src; 
     try {
+        // let config = {
+        //     "domain" : "demo.mehery.xyz",
+        //     "channelId" : "web:mainsite",
+        //     "channelKey" : "1g8kjp23sj8qxQE8QY2T89U",
+        //     "config":{
+        //        "header.bg.color":"#ffffff",
+        //        "header.text.color":"#000000",
+        //        "header.close.color":"#000ffffff000",
+        //        "header.icon.url":"https://stg-cms.jazeeraairways.com/getattachment/781c850b-47d3-4e0a-a73b-5e6dcfa2b776/jazeera-logo.svg",
+        //        "header.title.text":"Need Help?",
+        //        "launcher.bg.color":"#0072bc",
+        //        "messageList.bg.color":"#ffffff",
+        //        "sentMessage.bg.color":"#0167aa",
+        //        "sentMessage.text.color":"#ffffff",
+        //        "receivedMessage.bg.color":"#009bde",
+        //        "receivedMessage.text.color":"#ffffff",
+        //        "userInput.bg.color":"#183a8d",
+        //        "userInput.text.color":"#ffffff",
+        //        "userInput.button.color":"#ffffff",
+        //        "launcher.disabled":false,
+        //        "launcher.position":"left-sticky",
+        //        "externalcss.url":"https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+        //     }
+        //  }
+        // myChat.init(config);
         myChat.init(JSON.parse(myScript.innerHTML));
         win.myChat = myChat;
     } catch(e){
