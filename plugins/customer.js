@@ -199,9 +199,6 @@
     });
 
     var scripts = document.getElementsByTagName('script');    
-    var index = scripts.length - 1;
-    var myScript = scripts[index];
-    var serviceUrl = myScript.src; 
     try {
         // let config = {
         //     "domain" : "demo.mehery.xyz",
@@ -228,15 +225,19 @@
         //     }
         //  }
         // myChat.init(config);
-        let configString = myScript.innerHTML.trim();
-
+        let configString = null;
         if(!configString){
             for(var i in scripts){
-                if(scripts[index].id == 'mychatscript'){
-                    configString = scripts[index].innerHTML.trim();
+                if(scripts[i].id == 'mychatscript'){
+                    configString = scripts[i].innerHTML.trim();
                     break;
                 }
             }
+        }
+        if(!configString){
+            var index = scripts.length - 1;
+            var myScript = scripts[index];
+            configString = myScript.innerHTML.trim();
         }
         if(configString){
             myChat.init(JSON.parse(myScript.innerHTML));
