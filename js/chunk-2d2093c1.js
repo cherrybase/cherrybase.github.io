@@ -1,1 +1,1 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d2093c1"],{a7d9:function(o){o.exports=JSON.parse('{"options":[{"code":"TEXTLOCAL","name":"TextLocal"},{"code":"OTHERS","name":"Others"}]}')}}]);
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d2093c1"],{a7d9:function(o){o.exports=JSON.parse('{"options":[{"code":"TEXTLOCAL","name":"TextLocal"},{"code":"TWILIO","name":"twilio"},{"code":"OTHERS","name":"Others"}]}')}}]);
